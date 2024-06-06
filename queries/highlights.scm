@@ -1,5 +1,5 @@
 ;From nvim-treesitter/nvim-treesitter
-(atx_heading (inline) @string.special)
+(atx_heading TextileTitle)
 
 [
   (atx_h1_marker)
