@@ -1,5 +1,5 @@
 ;From nvim-treesitter/nvim-treesitter
-(atx_heading (inline) @text.title)
+(atx_heading (inline) @text.title  (#offset! @text.strong 0 1 0 0))
 
 [
   (atx_h1_marker)
