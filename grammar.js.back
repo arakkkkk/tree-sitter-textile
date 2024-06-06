@@ -1,0 +1,117 @@
+module.exports = grammar({
+  name: "textile",
+
+  rules: {
+    // todo: add the actual grammar rules
+    // document: ($) => seq($.heading, $.text),
+
+    section: ($) =>
+      choice(
+        $._section1,
+        $._section2,
+        $._section3,
+        $._section4,
+        $._section5,
+        $._section6,
+      ),
+
+    heading1: ($) =>
+      prec.right(
+        seq(
+          "h1",
+          ". ",
+          $.title,
+          repeat(
+            choice(
+              $.heading6,
+              $.heading5,
+              $.heading4,
+              $.heading3,
+              $.heading2,
+              $.contents,
+            ),
+          ),
+        ),
+      ),
+    heading2: ($) =>
+      prec.right(
+        seq(
+          "h2",
+          ". ",
+          $.title,
+          repeat(
+            choice(
+              $.heading6,
+              $.heading5,
+              $.heading4,
+              $.heading3,
+              $.paragraph,
+              $.contents,
+            ),
+          ),
+        ),
+      ),
+    heading3: ($) =>
+      prec.right(
+        seq(
+          "h3",
+          ". ",
+          $.title,
+          repeat(
+            choice($.heading6, $.heading5, $.heading4, $.paragraph, $.contents),
+          ),
+        ),
+      ),
+    heading4: ($) =>
+      prec.right(
+        seq(
+          "h4",
+          ". ",
+          $.title,
+          repeat(choice($.heading6, $.heading5, $.paragraph, $.contents)),
+        ),
+      ),
+    heading5: ($) =>
+      prec.right(
+        seq(
+          "h5",
+          ". ",
+          $.title,
+          repeat(choice($.heading6, $.paragraph, $.contents)),
+        ),
+      ),
+    heading6: ($) =>
+      prec.right(
+        seq("h6", ". ", $.title, repeat(choice($.paragraph, $.contents))),
+      ),
+
+    paragraph: ($) =>
+      prec.right(
+        seq("p", /[1-9]?[0-9]+/, ". ", $.title, repeat(choice($.contents))),
+      ),
+
+    contents: ($) =>
+      prec.right(10, seq(choice($.list, $.blank_line, $.code_block))),
+
+    list_item: ($) => seq(repeat1("*"), " ", $.text, $.line_break),
+
+    list: ($) => prec.right(repeat1(choice($.list_item))),
+
+    blank_line: ($) => seq(/[\n\r]/),
+
+    code_block: ($) => seq("<pre>", /.+/, "</pre>", $.line_break),
+
+    // Text
+    text: ($) => /[^\s]+/,
+    // word: ($) => proc.right(seq(/[^(h\d\.)(p\d\.)]+/)),
+
+    // title
+    title: ($) => seq(repeat1(/[^\s]/), $.line_break),
+    normal_line: ($) => prec.right(10, seq(/[^\s]+/, $.line_break)),
+
+    level: ($) => /[0-9]?[1-9]+/,
+
+    // line break
+    line_break: ($) => choice("\n", "\r\n"),
+  },
+});
